@@ -6,6 +6,8 @@
         <title></title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
 
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
@@ -19,31 +21,320 @@
     <body data-spy="scroll" data-target="#affix-nav">
         <div class="container">
             <div class="row">
-                <h1>Html Template таг</h1>
+                <h1>HTML Template таг</h1>
 
                 <section id="content" class="col-md-8">
                     <article id="intro">
-                    <h2><a href="http://www.cupcakeipsum.com/#" target="_blank">Веведение</a></h2>
+                    <h2>Веведение</h2>
                     <p>Темплейтите не са новост в уеб програмирането. В сървърното програмиране концепцията съществува от дълго време в технологии като Jango, Ruby, PHP, ASP.NET MVC и Java.
                     Във всяка MVC технология се ползват темплейти, защото тяхното предназначение е да се преизползва HTML код с различни параметри в него. Имено това е същността на MVC патърна - представяне на един и същ изглед с различен модел.</p>
 
                     <p>В HTML до скоро не съществуваше вградена функционалност за използване на темплейти и затова има доста частни библиотеки, които предлагат това. В най-новия стандарт на HTML, този пропуск е запълнен чрез технология наречена уеб компоненти, една от възможностите на която е темплейтинг благодарение на вградения <code>&lt;template&gt;</code> таг.</p>
-                        <section id="template-def"><h3>Какво е темплейт?</h3><p>Macaroon bonbon powder. Chocolate cupcake danish. Apple pie unerdwear.com brownie jelly. Halvah tart fruitcake gingerbread liquorice. Pastry caramels powder. Danish macaroon jujubes dragée croissant ice cream chocolate tootsie roll gummi bears. Tart jelly-o oat cake wafer.</p></section>
-                        <section id="solutions"><h3>Решения до момента</h3><p>Lemon drops chocolate cake jelly beans chocolate wafer unerdwear.com. Apple pie jelly beans topping danish candy canes carrot cake toffee jelly beans. Sweet roll dragée icing applicake cheesecake. Chupa chups pie pastry icing brownie wafer jujubes powder danish. Topping tiramisu danish jelly beans chupa chups dragée. Cake tootsie roll sweet roll marshmallow topping pudding toffee powder. Bear claw sesame snaps gummies unerdwear.com topping biscuit muffin. Donut chocolate muffin cotton candy marshmallow applicake.</p></section>
-                        <section id="components"><h3>Уеб компоненти</h3><p>Sugar plum sweet roll oat cake muffin tootsie roll danish brownie. Toffee cheesecake pudding pastry lollipop dessert candy chocolate cake wafer. Chupa chups marshmallow jelly caramels pie candy canes gummi bears wafer carrot cake. Wafer marshmallow chocolate cotton candy brownie. Lemon drops oat cake halvah cookie liquorice pie. Tart tootsie roll chupa chups cake wafer bear claw tart unerdwear.com. Cookie bonbon tart lollipop gummi bears pudding wafer danish. Marzipan cake dessert chupa chups tart chocolate cake bonbon jujubes. Unerdwear.com biscuit cookie cake gummies sweet roll tart caramels.</p></section>
+                        <section id="template-def"><h3>Какво е темплейт?</h3><p>Темплейтите са решението на проблема как да слеем сложна структура от данни с html код. Повечето съвременни библиотеки работят с темплейти в <code>&lt;script&gt;</code> таг:</p>
+                        <pre class="prettyprint">
+&lt;script type="text/html"&gt;
+    &lt;ul&gt;
+    &lt;% for (var i = 0; i &lt; context.length; i++) { %&gt;
+        &lt;li&gt; context[i] &lt;/li&gt;
+    &lt;% }; %&gt;
+    &lt;/ul&gt;
+&lt;/script&gt;</pre>
+                        <p>Горният темплейт съдържа добре познат html примесен с javascript. Виждаме цикъл, който итерира върху масив <code>context</code>. Това е структурата от данни, която искаме да покажем. Tемплейтът може да се преизползва многократно за обекти, които съдържат различни данни, но искаме да се появят в страницата по един и същ начин. Различните библиотеки работят с различен синтаксис, например някои позволяват да се ползва javascript, други работят с определени тагове.</p>
+                        </section>
+                        <section id="solutions"><h3>Решения до момента</h3>
+                        <p>Понеже html стандартът до скоро не съдържаше темплейти, нуждите на индустрията са задоволени от множество библиотеки, повечето от които са с отворен код. Интересното е, че някои могат да се използват и на сървъра във фреймуърци като Node.js. По-разпространените са:
+                        <ul>
+                             <li><h4><a href="http://handlebarsjs.com/">Handlebars</a></h4>
+                                <p>Специализирана е само за работа с темплейти, може да се ползва и на сървъра. Handlebars не позволява смесване на javascript с html. За цикли, условни конструкции и др. се използва определен синтаксис.</p>
+<pre class="prettyprint">
+&lt;script id="template"&gt;
+    &lt;div id="comments"&gt;
+        {{#each comments}}
+        &lt;h2&gt;&lt;a href="/posts/{{../permalink}}#{{id}}"&gt;{{title}}&lt;/a&gt;&lt;/h2&gt;
+        &lt;div>{{body}}&lt;/div&gt;
+        {{/each}}
+    &lt;/div&gt;
+&lt;script&gt;</pre>
+                                <p>
+                                    За да се компилира темплейта и за да се запълни със съдържание се използва следния код:
+<pre class="prettyprint">
+var source   = $("#template").html();
+var template = Handlebars.compile(source);
+var context = {title: "My New Post", body: "This is my first post!"}
+var html    = template(context);
+</pre>
+                                </p>
+                             </li>
+                             <li><h4><a href="http://jade-lang.com/">Jade</a></h4>
+                             <p>
+                                 Предназначена е главно за Node.js но може да се използва и в клиентски приложения. Синтаксиса по-различен от на html - няма отвярящи и затварящи тагове, само имената на таговете са запазени и идентациата на текста е от голямо значение.
+<pre class="prettyprint">
+h1 Jade - node template engine
+#container.col
+  if youAreUsingJade
+    p You are amazing
+  else
+    p Get on it!
+  p.
+    Jade is a terse and simple
+    templating language with a
+    strong focus on performance
+    and powerful features.
+</pre>
+                            <p>Този темплейт се компилира до:</p>
+<pre class="prettyprint">
+&lt;h1&gt;Jade - node template engine&lt;/h1&gt;
+&lt;div id="container" class="col"&gt;
+  &lt;p&gt;You are amazing&lt;/p&gt;
+  &lt;p&gt;
+    Jade is a terse and simple
+    templating language with a
+    strong focus on performance
+    and powerful features.
+  &lt;/p&gt;
+&lt;/div&gt;
+</pre>
+                             </p>
+                             </li>
+                         </ul> 
+                            
+                        </p>
+                        </section>
+                        <section id="components"><h3>Уеб компоненти</h3><p>
+                            Така наречените уеб компоненти са спецификация в стандарта html, която е имплементирана в последните версии на най-популярните браузъри. Тя позволява създаването на преизползваеми тагове със собствен темплейт и javascript код, без да е необходимо да се ползва някоя от гореспоменатите библиотеки. Функционалноста e част от езика както <code>&lt;canvas&gt;</code> тага например. За уеб компонента може да се мисли като за интерфейс уиджет, който е скрил в себе си html, css и javascript код. Вътрешната имплементация не е видима за никого и не може да повлияе на останалата част на страницата. Например не може да счупи стиловете на някой от елементите, които не принадлежат на компонента. Достатъчно е да се добави <code>import</code> таг на страницата с пътя до файла където е дефиниран компонента и вече няговият таг може да се ползва където и да е в html кода. Компонентите се реализират чрез следните технологии (могат да се използват и по отделно):
+                            <ul>
+                                <li><h4>специфични елементи</h4>
+                                    <p>Всеки програмист може да си създаде собствен html таг, който може да съдържа скрипт и стилове. Създава се с <code>Document.registerElement()</code>. Може да има собствени параметри или да наследи свойства от вече съществуващ елемент както и да инициира събития.                                        
+                                    </p>
+                                </li>
+                                <li><h4>HTML темплейти</h4>
+                                    <p>Новият <code>&lt;template&gt;</code> таг ще премахне нуждата да слагаме темплейтите си в <code>&lt;script&gt;</code>. Съдържанието му няма да се слага в ДОМ дървото докато javascript код не компилира темплейта с някакви данни. Браузърът единствено ще провери дали темплейтът е валиден когато се зарежда страницата.</p>
+                                </li>
+                                <li><h4>Shadow DOM</h4>
+                                    <p>Тази технология капсулира ДОМ поддървото на уеб компонента с неговия стил и съпътстващи скриптове в отделно именовано пространство. Така се постига изолираност от останалата част на страницата, за да няма конфликти с други елементи.</p>
+                                </li>
+                                <li><h4>HTML импорт</h4>
+                                    <p>Импортите се планира да бъдат механизма за включване на пакети съдържащи уеб компоненти в html страница. Осъществяват се със следния код: <code>&lt;link rel="import" href="myfile.html"&gt;</code></p>
+                                </li>
+                            </ul>
+                            </p></section>
                     </article>
                     <br />
-                    <article id="veggie">
-                        <h2><a href="http://veggieipsum.com/" target="_blank">Veggie Lorem Ipsum</a></h2>
-                        <p>Cupcake ipsum dolor sit amet toffee icing. Soufflé muffin danish cotton candy pudding cake danish chocolate candy. Oat cake apple pie ice cream biscuit brownie. Cookie chupa chups jelly lollipop. Chocolate cake sweet gummies ice cream powder gummi bears lemon drops icing caramels. Sesame snaps gingerbread chocolate bar sugar plum fruitcake icing jujubes pie.</p>
-                        <section id="coriander"><h3>coriander</h3><p>Macaroon bonbon powder. Chocolate cupcake danish. Apple pie unerdwear.com brownie jelly. Halvah tart fruitcake gingerbread liquorice. Pastry caramels powder. Danish macaroon jujubes dragée croissant ice cream chocolate tootsie roll gummi bears. Tart jelly-o oat cake wafer.</p></section>
-                        <section id="kohlrabi"><h3>kohlrabi</h3><p>Lemon drops chocolate cake jelly beans chocolate wafer unerdwear.com. Apple pie jelly beans topping danish candy canes carrot cake toffee jelly beans. Sweet roll dragée icing applicake cheesecake. Chupa chups pie pastry icing brownie wafer jujubes powder danish. Topping tiramisu danish jelly beans chupa chups dragée. Cake tootsie roll sweet roll marshmallow topping pudding toffee powder. Bear claw sesame snaps gummies unerdwear.com topping biscuit muffin. Donut chocolate muffin cotton candy marshmallow applicake.</p></section>
-                        <section id="amaranth"><h3>amaranth</h3><p>Sugar plum sweet roll oat cake muffin tootsie roll danish brownie. Toffee cheesecake pudding pastry lollipop dessert candy chocolate cake wafer. Chupa chups marshmallow jelly caramels pie candy canes gummi bears wafer carrot cake. Wafer marshmallow chocolate cotton candy brownie. Lemon drops oat cake halvah cookie liquorice pie. Tart tootsie roll chupa chups cake wafer bear claw tart unerdwear.com. Cookie bonbon tart lollipop gummi bears pudding wafer danish. Marzipan cake dessert chupa chups tart chocolate cake bonbon jujubes. Unerdwear.com biscuit cookie cake gummies sweet roll tart caramels.</p></section>
-                        <section id="soybean"><h3>soybean</h3><p>Sugar plum sweet roll oat cake muffin tootsie roll danish brownie. Toffee cheesecake pudding pastry lollipop dessert candy chocolate cake wafer. Chupa chups marshmallow jelly caramels pie candy canes gummi bears wafer carrot cake. Wafer marshmallow chocolate cotton candy brownie. Lemon drops oat cake halvah cookie liquorice pie. Tart tootsie roll chupa chups cake wafer bear claw tart unerdwear.com. Cookie bonbon tart lollipop gummi bears pudding wafer danish. Marzipan cake dessert chupa chups tart chocolate cake bonbon jujubes. Unerdwear.com biscuit cookie cake gummies sweet roll tart caramels.</p></section>
+                    <article id="template-deep-dive">
+                        <h2>Работа с новите темплейти</h2>
+                        <p>Темплейт тага може да се поставя в <code>&lt;body&gt;, &lt;frameset&gt;, &lt;head&gt;, &lt;colgroup&gt; </code> без <code>&lt;span&gt;</code>. Не е необходимо да е част от уеб компонент.</p>
+                        <section id="feature-detection"><h3>Проверка за поддръжка</h3><p>Понеже все още не всички браузъри поддържат темплейти, можем да използваме следния код, за да проверим дали е базопасно да сложим тага на страницата.
+<pre class="prettyprint">
+function supportsTemplate() {
+  return 'content' in document.createElement('template');
+}
+
+if (supportsTemplate()) {
+  // Good to go!
+} else {
+  // Use old templating techniques or libraries.
+}
+</pre>
+                        </p></section>
+                        <section id="declaring"><h3>Деклариране</h3>
+                        <p>
+                            Можем да си мислим за съдържанието в темплейт тага като за откъснато парче html структура, която е подходяща за многократно преизползване. Достатъчно е да добавим тага и в него html кода.</p>
+<pre class="prettyprint">
+&lt;template id="mytemplate"&gt;
+  &lt;img src="" alt="great image"&gt;
+  &lt;div class="comment"&gt;&lt;/div&gt;
+&lt;/template&gt;
+</pre>
+                        <p>
+                            Празният сорс атрибут на имидж тага не е случаен. Нямя да видим грашка с код 404 понеже темплейта няма да се зареди при отваряне на страницата и ще можем да му подадем подходящ адрес когато го активираме.
+                        </p></section>
+                        <section id="properties"><h3>Полезни свойства</h3><p>Темплейтите имат следните полезни свойства:</p>
+                        <ol>
+                            <li>Съдържанието му е скрито и няма да се изобрази докато не се активира.</li>
+                            <li>Всичко което е в него - скриптове, стилове, аудио и видео няма да се изпълнят докато не се активира.</li>
+                            <li><code>document.getElementById()</code> и <code>querySelector()</code> изпълени за елемент в темплейт тага няма да върнат нищо.</li>
+                            <li>Темплейт тага може да се поставя на всички места, които имат някой от изброените по-горе тагове в пътя си от родители. Например може да се сложи в <code>&lt;table&gt;</code> или <code>&lt;select&gt;</code>. Изключение правят тагове, които изрично са забранили това в спецификацията си.</li>
+                        </ol></section>
+                        <section id="activation"><h3>Активация</h3><p>За да се използва темплейт, той трябва да се активира. Това става най-лесно със следния код:</p>
+<pre class="prettyprint">
+var t = document.querySelector('#mytemplate');
+// Populate the src at runtime.
+t.content.querySelector('img').src = 'logo.png';
+
+var clone = document.importNode(t.content, true);
+document.body.appendChild(clone);
+</pre>
+                        <p>Селектираме темплейта, променяме неговото съдържание чрез <code>.content</code> (в случея задаваме адрес на снимка), импортваме съдържанието в нов елемент и го добавяме в DOM дървото.</p>
+                        </section>
+                        <section id="demo"><h3>Демо</h3>
+                            <ul>
+                                <li><h4>Отложено изпълнение на скрипт</h4>
+                                <p>В примера функцията <code>alert</code> ще бъде изпълнена когато се натисне бутона, защото тогава темплейтът ще бъде активиран.</p>
+<pre class="prettyprint">
+&lt;button onclick="useIt()">Use me&lt;/button&gt;
+&lt;div id="container"&gt;&lt;/div&gt;
+&lt;script&gt;
+  function useIt() {
+    var content = document.querySelector('template').content;
+
+    // Update something in the template DOM.
+    var span = content.querySelector('span');
+    span.textContent = parseInt(span.textContent) + 1;
+
+    document.querySelector('#container').appendChild(
+        document.importNode(content, true));
+  }
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div>Template used: &lt;span&gt;0&lt;/span&gt;&lt;/div&gt;
+  &lt;script>alert('Thanks!')&lt;/script&gt;
+&lt;/template&gt;
+</pre>
+
+                                </li>
+                                <li><h4>Създаване на Shadow DOM  чрез темплейт</h4>
+                                <p>
+                                    Често хората добавят скрит маркъп чрез <code>.innerHTML</code> на хоста:
+                                </p>
+<pre class="prettyprint">
+&lt;div id="host"&gt;&lt;/div&gt;
+&lt;script&gt;
+  var shadow = document.querySelector('#host').createShadowRoot();
+  shadow.innerHTML = '&lt;span>Host node&lt;/span&gt;';
+&lt;/script&gt;
+</pre>                          
+                                    <p>С този подход имаме проблем когато низа, който добавяме стане прекалено дълъг. Също така сме отворени за XSS атаки. Много по-подходящо за тази цел е да се ползва съдържанието на темплейт:</p>
+<pre class="prettyprint">
+&lt;template&gt;
+&lt;style&gt;
+ :host {
+    background: #f8f8f8;
+    padding: 10px;
+    transition: all 400ms ease-in-out;
+    box-sizing: border-box;
+    border-radius: 5px;
+    width: 450px;
+    max-width: 100%;
+  } 
+  :host(:hover) {
+    background: #ccc;
+  }
+  div {
+    position: relative;
+  }
+  header {
+    padding: 5px;
+    border-bottom: 1px solid #aaa;
+  }
+  h3 {
+    margin: 0 !important;
+  }
+  textarea {
+    font-family: inherit;
+    width: 100%;
+    height: 100px;
+    box-sizing: border-box;
+    border: 1px solid #aaa;
+  }
+  footer {
+    position: absolute;
+    bottom: 10px;
+    right: 5px;
+  }
+&lt;/style&gt;
+&lt;div&gt;
+  &lt;header&gt;
+    &lt;h3&gt;Add a Comment&lt;/h3&gt;
+  &lt;/header&gt;
+  &lt;content select="p"&gt;&lt;/content&gt;
+  &lt;textarea&gt;&lt;/textarea&gt;
+  &lt;footer&gt;
+    &lt;button&gt;Post&lt;/button&gt;
+  &lt;/footer&gt;
+&lt;/div&gt;
+&lt;/template&gt;
+
+&lt;div id="host"&gt;
+  &lt;p&gt;Instructions go here&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+  var shadow = document.querySelector('#host').createShadowRoot();
+  shadow.appendChild(document.querySelector('template').content);
+&lt;/script&gt;
+</pre>
+
+                                </li>
+                            </ul>
+                        </section>
+                        <section id="errors"><h3>Чести грешки</h3>
+                            <ul>
+                                <li>Няма начин да се заредят предварително ресурси - например скрипт, снимки, файлове със стилове преди да се активира темплейта. Те ще бъдат заедени единствено когато той се активира.</li>
+                                <li>Ако имаме вложени темплейти и активираме външния, вътрешния няма да се активира. Той трябва изрично да се активира чрез код.</li>
+                            </ul>
+                        </section>
+                        <section id="support"><h3>Поддръжка в браузърите</h3>
+                            <table class="table">
+                              <caption>Версии след които може да се използват темплейти</caption>
+                              <thead>
+                                <tr>
+                                  <th>Тип</th>
+                                  <th>Chrome</th>
+                                  <th>Firefox (Gecko)</th>
+                                  <th>Internet Explorer</th>
+                                  <th>Opera</th>
+                                  <th>Safari (WebKit)</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <th scope="row">Основна поддръжка</th>
+                                  <td>26</td>
+                                  <td>22 (22)</td>
+                                  <td>Не се поддържа</td>
+                                  <td>15</td>
+                                  <td>7.1</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                        </section>
+                        <section id="polymer"><h3>Polymer</h3><p>Тъй като уеб компонентите не са напълно поддържани от всички версии на браузърите, ако ги използваме рискуваме сайта ни да не работи при много клиенти. Можем да избегнем тази неприятна ситуация ако добавим библиотека (polyfill), която да компенсира липсващата функционалност на браузъра чрез javascript. Най-популярната такава е <a href="https://www.polymer-project.org/">Polymer</a>. Тя е изградена от три слоя:</p>
+                            <ul>
+                                <li>полифил код, който имплементира липсващи функционалности</li>
+                                <li>библиотека, която добавя нови възможности към уеб компонентите - двупосочна връзка за обмен на данни между компоненти, по-удобен декларативен синтаксис за създаване на нови елементи и механизъм за наблюдение на промени</li>
+                                <li>готови елементи - имплементация на често използвани компоненти в уеб страниците</li>
+                            </ul>
+                        </section>
                      </article>
-                     <br>
-                     <article>
-                         Bacon ipsum dolor sit amet turkey filet mignon meatloaf short ribs pork loin short loin. Turducken ribeye tail, beef ribs prosciutto sausage shankle swine beef frankfurter meatball. Shankle kielbasa drumstick spare ribs swine pork chicken meatloaf doner turkey kevin pancetta tail. Corned beef pork belly beef ribs venison doner. Tri-tip meatball ham tongue sausage bresaola capicola t-bone andouille. Swine tri-tip boudin, beef sirloin turducken prosciutto jowl fatback pancetta tail. Prosciutto andouille ball tip short loin ham tenderloin venison meatloaf beef ribs meatball spare ribs tri-tip. T-bone shankle shank boudin filet mignon tenderloin, beef sausage. T-bone tail pork loin, shank swine pastrami cow chicken pancetta shoulder sirloin capicola ham hock. Tenderloin rump pork chop pork. Prosciutto turkey andouille ball tip. Doner salami pancetta shank frankfurter t-bone pastrami biltong. Turducken rump tenderloin pancetta, tri-tip strip steak frankfurter jerky. Pork loin capicola rump turkey cow brisket short loin drumstick. Prosciutto meatloaf frankfurter hamburger rump jowl swine salami. Chuck tail brisket, shankle swine leberkas ground round tenderloin flank. Sausage pancetta drumstick rump pastrami, jowl venison leberkas meatball fatback bacon filet mignon brisket ham. Meatball strip steak fatback pork chop short loin beef turkey tenderloin prosciutto capicola pastrami beef ribs pig. Biltong corned beef turkey salami fatback, flank frankfurter ball tip tenderloin. Tail drumstick chuck boudin short loin shank fatback beef tongue shoulder prosciutto jowl. Pig ham bresaola pork, leberkas meatloaf chicken fatback drumstick filet mignon jowl. Pig tail jowl cow spare ribs meatball jerky, drumstick short ribs sausage ground round chicken chuck kevin. Chuck strip steak corned beef, andouille bresaola pork chop kielbasa sausage turkey tongue t-bone meatball. Cow pork loin sirloin kielbasa strip steak pancetta. Kielbasa capicola ribeye tenderloin pork venison salami bresaola flank pork loin tri-tip rump beef. Ball tip tail venison ground round. Corned beef biltong pig pork loin andouille doner leberkas drumstick pork tongue tenderloin. Bacon ipsum dolor sit amet turkey filet mignon meatloaf short ribs pork loin short loin. Turducken ribeye tail, beef ribs prosciutto sausage shankle swine beef frankfurter meatball. Shankle kielbasa drumstick spare ribs swine pork chicken meatloaf doner turkey kevin pancetta tail. Corned beef pork belly beef ribs venison doner. Tri-tip meatball ham tongue sausage bresaola capicola t-bone andouille. Swine tri-tip boudin, beef sirloin turducken prosciutto jowl fatback pancetta tail. Prosciutto andouille ball tip short loin ham tenderloin venison meatloaf beef ribs meatball spare ribs tri-tip. T-bone shankle shank boudin filet mignon tenderloin, beef sausage. T-bone tail pork loin, shank swine pastrami cow chicken pancetta shoulder sirloin capicola ham hock. Tenderloin rump pork chop pork. Prosciutto turkey andouille ball tip. Doner salami pancetta shank frankfurter t-bone pastrami biltong. Turducken rump tenderloin pancetta, tri-tip strip steak frankfurter jerky. Pork loin capicola rump turkey cow brisket short loin drumstick. Prosciutto meatloaf frankfurter hamburger rump jowl swine salami. Chuck tail brisket, shankle swine leberkas ground round tenderloin flank. Sausage pancetta drumstick rump pastrami, jowl venison leberkas meatball fatback bacon filet mignon brisket ham. Meatball strip steak fatback pork chop short loin beef turkey tenderloin prosciutto capicola pastrami beef ribs pig. Biltong corned beef turkey salami fatback, flank frankfurter ball tip tenderloin. Tail drumstick chuck boudin short loin shank fatback beef tongue shoulder prosciutto jowl. Pig ham bresaola pork, leberkas meatloaf chicken fatback drumstick filet mignon jowl. Pig tail jowl cow spare ribs meatball jerky, drumstick short ribs sausage ground round chicken chuck kevin. Chuck strip steak corned beef, andouille bresaola pork chop kielbasa sausage turkey tongue t-bone meatball. Cow pork loin sirloin kielbasa strip steak pancetta. Kielbasa capicola ribeye tenderloin pork venison salami bresaola flank pork loin tri-tip rump beef. Ball tip tail venison ground round. Corned beef biltong pig pork loin andouille doner leberkas drumstick pork tongue tenderloin.
+                     <article id="resources">
+                         <h2>Допълнителни ресурси</h2>
+                         <p>Можете да получите повече информация от следните линкове:</p>
+                         <section>
+                             <h3>Уеб компоненти</h3>
+                             <ul>
+                                 <li><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components">https://developer.mozilla.org/en-US/docs/Web/Web_Components</a></li>
+                                 <li><a href="http://webcomponents.org/">http://webcomponents.org/</a></li>
+                                 <li><a href="https://www.polymer-project.org/platform/custom-elements.html">https://www.polymer-project.org/platform/custom-elements.html</a></li>
+                             </ul>
+                         </section>
+                         <section>
+                             <h3>Темплейт таг</h3>
+                             <ul>
+                                 <li><a href="http://www.html5rocks.com/en/tutorials/webcomponents/template/">http://www.html5rocks.com/en/tutorials/webcomponents/template/</a></li>
+                                 <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template">https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template</a></li>
+                                 <li><a href="http://www.w3.org/TR/html5/scripting-1.html#the-template-element">http://www.w3.org/TR/html5/scripting-1.html#the-template-element</a></li>
+                             </ul>
+                         </section>
+                         <section>
+                             <h3>Библиотеки</h3>
+                             <ul>
+                                 <li><a href="https://www.polymer-project.org/">https://www.polymer-project.org/</a></li>
+                                 <li><a href="http://handlebarsjs.com/">http://handlebarsjs.com/</a></li>
+                                 <li><a href="http://jade-lang.com/">http://jade-lang.com/</a></li>
+                                 <li><a href="http://underscorejs.org/#template">http://underscorejs.org/#template</a></li>
+                             </ul>
+                         </section>
                      </article>
                 </section>
 
@@ -56,14 +347,19 @@
                                 <li><a href="#components">Уеб компоненти</a></li>
                             </ul>
                         </li>
-                        <li><a href="#veggie">Veggie Lorem Ipsum</a>
+                        <li><a href="#template-deep-dive">Работа с новите темплейти</a>
                             <ul class="nav">   
-                                <li><a href="#coriander">Coriander</a></li>
-                                <li><a href="#kohlrabi">Kohlrabi</a></li>
-                                <li><a href="#amaranth">Amaranth</a></li>
-                                <li><a href="#soybean">Soybean</a></li>        
+                                <li><a href="#feature-detection">Проверка за поддръжка</a></li>
+                                <li><a href="#declaring">Деклариране</a></li>
+                                <li><a href="#properties">Полезни свойства</a></li>
+                                <li><a href="#activation">Активация</a></li>
+                                <li><a href="#demo">Демо</a></li>
+                                <li><a href="#errors">Чести грешки</a></li>
+                                <li><a href="#support">Поддръжка в браузърите</a></li>
+                                <li><a href="#polymer">Polymer</a></li>
                             </ul>
                         </li>
+                        <li><a href="#resources">Допълнителни ресурси</a></li>
                     </ul>
                 </nav>
             </div><!-- end of row -->
